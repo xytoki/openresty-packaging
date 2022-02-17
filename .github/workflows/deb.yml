@@ -1,0 +1,59 @@
+name: Build deb
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Prepare Environment
+      run: |
+        sudo apt-get -y install libtemplate-perl systemtap-sdt-dev perl gnupg wget ca-certificates curl make build-essential dh-make bzr-builddeb rename
+        wget -O - https://openresty.org/package/pubkey.gpg | sudo apt-key add -
+        echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/openresty.list
+        sudo apt-get update
+    
+    - name: Patch Brotli
+      run: sed -i 's/--with-http_gunzip_module/--with-http_gunzip_module --add-module=$(CURDIR)\/..\/..\/ngx_brotli/g' ./deb/openresty/debian/rules
+    
+    - name: Patch debuild
+      run: |
+        sed -i 's/OPTS=/OPTS= -uc -us /g' ./deb/Makefile
+        sed -i 's/Recommends: openresty-resty, openresty-opm/Recommends: /g' ./deb/openresty/debian/control
+        sed -i 's/Suggests: openresty-restydoc/Suggests: /g' ./deb/openresty/debian/control
+        sed -i 's/Package: openresty$/Package: openresty-xy/g' ./deb/openresty/debian/control
+        sed -i 's/, openresty$/, openresty-xy/g' ./deb/openresty/debian/control
+        sed -i 's/OpenResty Admin <admin@openresty.com>/xyToki <xytoki@outlook.com>/g' ./deb/openresty/debian/control
+        echo "/usr/local/openresty/nginx/sbin/nginx       /usr/sbin/nginx" >> ./deb/openresty/debian/openresty.links
+        mv ./deb/openresty/debian/openresty.conffiles ./deb/openresty/debian/openresty-xy.conffiles
+        mv ./deb/openresty/debian/openresty.install ./deb/openresty/debian/openresty-xy.install
+        mv ./deb/openresty/debian/openresty.links ./deb/openresty/debian/openresty-xy.links
+        mv ./deb/openresty/debian/openresty.service ./deb/openresty/debian/openresty-xy.nginx.service
+        rm ./deb/openresty/debian/openresty.init
+        echo 'override_dh_systemd_enable:' >> ./deb/openresty/debian/rules
+        echo '	dh_systemd_enable --name=nginx' >> ./deb/openresty/debian/rules
+        echo 'override_dh_systemd_start:' >> ./deb/openresty/debian/rules
+        echo '	dh_systemd_start --name=nginx' >> ./deb/openresty/debian/rules
+    
+    - name: Get ngx-brotli
+      run: |
+        git clone http://github.com/google/ngx_brotli.git
+        mkdir -p ngx_brotli/deps
+        git clone https://github.com/google/brotli.git ngx_brotli/deps/brotli --depth=1
+      
+    - name: Make openresty
+      run: cd deb && make openresty-build
+      
+    - name: Upload
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        path: |
+          deb/openresty-xy*.deb

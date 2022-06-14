@@ -50,10 +50,20 @@ jobs:
         git clone https://github.com/google/brotli.git ngx_brotli/deps/brotli --depth=1
       
     - name: Make openresty
-      run: cd deb && make openresty-build
+      run: cd deb && make openresty-build -j 4
       
-    - name: Upload
-      uses: actions/upload-artifact@v2.3.1
+    - name: Checkout dist
+      uses: actions/checkout@v3
       with:
-        path: |
-          deb/openresty-xy*.deb
+        ref: dist
+        path: dist  
+          
+    - name: Move new debs to dist and commit
+      run: |
+        cp -rn deb/openresty-xy*.deb dist/
+        cd dist
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git diff-index --quiet HEAD || git commit -m "generated"
+        git push

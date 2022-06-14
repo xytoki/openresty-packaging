@@ -50,7 +50,7 @@ jobs:
         git clone https://github.com/google/brotli.git ngx_brotli/deps/brotli --depth=1
       
     - name: Make openresty
-      run: cd deb && make openresty-build -j 4
+      run: cd deb && make openresty-build
       
     - name: Checkout dist
       uses: actions/checkout@v3

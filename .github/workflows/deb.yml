@@ -27,12 +27,10 @@ jobs:
     - name: Patch debuild
       run: |
         sed -i 's/OPTS=/OPTS= -uc -us /g' ./deb/Makefile
-        sed -i 's/Recommends: openresty-resty, openresty-opm/Recommends: Recommends: openresty-xy-resty, openresty-xy-opm/g' ./deb/openresty/debian/control
+        sed -i 's/Recommends: openresty-resty, openresty-opm/Recommends: /g' ./deb/openresty/debian/control
         sed -i 's/Suggests: openresty-restydoc/Suggests: /g' ./deb/openresty/debian/control
         sed -i 's/Package: openresty$/Package: openresty-xy/g' ./deb/openresty/debian/control
-        sed -i 's/, openresty$/, openresty-xy/g' ./deb/openresty/debian/control
-        sed -i 's/, openresty-resty$/, openresty-xy-resty/g' ./deb/openresty/debian/control
-        sed -i 's/, openresty-opm$/, openresty-xy-opm/g' ./deb/openresty/debian/control
+        sed -i 's/, openresty$/, openresty-xy/g' ./deb/openresty/debian/
         sed -i 's/openresty (/openresty-xy (/g' ./deb/openresty/debian/control
         sed -i 's/OpenResty Admin <admin@openresty.com>/xiaoyu <xiaoyu@xyget.cn>/g' ./deb/openresty/debian/control
         echo "/usr/local/openresty/nginx/sbin/nginx       /usr/sbin/nginx" >> ./deb/openresty/debian/openresty.links
@@ -45,6 +43,10 @@ jobs:
         echo '	dh_systemd_enable --name=nginx' >> ./deb/openresty/debian/rules
         echo 'override_dh_systemd_start:' >> ./deb/openresty/debian/rules
         echo '	dh_systemd_start --name=nginx' >> ./deb/openresty/debian/rules
+        cat ./deb/openresty/debian/openresty-resty.install >> ./deb/openresty/debian/openresty-xy.install
+        cat ./deb/openresty/debian/openresty-resty.links >> ./deb/openresty/debian/openresty-xy.links
+        cat ./deb/openresty/debian/openresty-opm.install >> ./deb/openresty/debian/openresty-xy.install
+        cat ./deb/openresty/debian/openresty-opm.links >> ./deb/openresty/debian/openresty-xy.links
     
     - name: Get ngx-brotli
       run: |

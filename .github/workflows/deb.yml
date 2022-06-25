@@ -46,6 +46,7 @@ jobs:
         cat ./deb/openresty/debian/openresty-resty.links >> ./deb/openresty/debian/openresty-xy.links
         cat ./deb/openresty/debian/openresty-opm.install >> ./deb/openresty/debian/openresty-xy.install
         cat ./deb/openresty/debian/openresty-opm.links >> ./deb/openresty/debian/openresty-xy.links
+        echo 'usr/local/openresty/site/lualib/*' >> ./deb/openresty/debian/openresty-xy.install
     
     - name: Get ngx-brotli
       run: |

@@ -21,17 +21,20 @@ jobs:
         echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/openresty.list
         sudo apt-get update
     
-    - name: Patch Brotli
-      run: sed -i 's/--with-http_gunzip_module/--with-http_gunzip_module --add-module=$(CURDIR)\/..\/..\/nginx-dav-ext-module --add-module=$(CURDIR)\/..\/..\/ngx_brotli/g' ./deb/openresty/debian/rules
+    - name: Patch modules
+      run: sed -i 's/--with-http_gunzip_module/--with-http_gunzip_module --add-module=$(CURDIR)\/..\/..\/ngx-fancyindex --add-module=$(CURDIR)\/..\/..\/nginx-dav-ext-module --add-module=$(CURDIR)\/..\/..\/ngx_brotli/g' ./deb/openresty/debian/rules
     
     - name: Patch debuild
       run: |
         sed -i 's/OPTS=/OPTS= -uc -us /g' ./deb/Makefile
-        sed -i 's/Recommends: openresty-resty, openresty-opm/Recommends: /g' ./deb/openresty/debian/control
+        sed -i 's/Recommends: openresty-resty, openresty-opm/Recommends: Recommends: openresty-xy-resty, openresty-xy-opm/g' ./deb/openresty/debian/control
         sed -i 's/Suggests: openresty-restydoc/Suggests: /g' ./deb/openresty/debian/control
         sed -i 's/Package: openresty$/Package: openresty-xy/g' ./deb/openresty/debian/control
         sed -i 's/, openresty$/, openresty-xy/g' ./deb/openresty/debian/control
-        sed -i 's/OpenResty Admin <admin@openresty.com>/xyToki <xytoki@outlook.com>/g' ./deb/openresty/debian/control
+        sed -i 's/, openresty-resty$/, openresty-xy-resty/g' ./deb/openresty/debian/control
+        sed -i 's/, openresty-opm$/, openresty-xy-opm/g' ./deb/openresty/debian/control
+        sed -i 's/openresty (/openresty-xy (/g' ./deb/openresty/debian/control
+        sed -i 's/OpenResty Admin <admin@openresty.com>/xiaoyu <xiaoyu@xyget.cn>/g' ./deb/openresty/debian/control
         echo "/usr/local/openresty/nginx/sbin/nginx       /usr/sbin/nginx" >> ./deb/openresty/debian/openresty.links
         mv ./deb/openresty/debian/openresty.conffiles ./deb/openresty/debian/openresty-xy.conffiles
         mv ./deb/openresty/debian/openresty.install ./deb/openresty/debian/openresty-xy.install
@@ -52,6 +55,10 @@ jobs:
     - name: Get ngx-dav-ext
       run: |
         git clone https://github.com/arut/nginx-dav-ext-module.git
+    
+    - name: Get ngx-fancyindex
+      run: |
+        git clone https://github.com/aperezdc/ngx-fancyindex.git
       
     - name: Make openresty
       run: cd deb && make openresty-build

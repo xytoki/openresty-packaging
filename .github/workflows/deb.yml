@@ -30,8 +30,7 @@ jobs:
         sed -i 's/Recommends: openresty-resty, openresty-opm/Recommends: /g' ./deb/openresty/debian/control
         sed -i 's/Suggests: openresty-restydoc/Suggests: /g' ./deb/openresty/debian/control
         sed -i 's/Package: openresty$/Package: openresty-xy/g' ./deb/openresty/debian/control
-        sed -i 's/, openresty$/, openresty-xy/g' ./deb/openresty/debian/
-        sed -i 's/openresty (/openresty-xy (/g' ./deb/openresty/debian/control
+        sed -i 's/, openresty$/, openresty-xy/g' ./deb/openresty/debian/control
         sed -i 's/OpenResty Admin <admin@openresty.com>/xiaoyu <xiaoyu@xyget.cn>/g' ./deb/openresty/debian/control
         echo "/usr/local/openresty/nginx/sbin/nginx       /usr/sbin/nginx" >> ./deb/openresty/debian/openresty.links
         mv ./deb/openresty/debian/openresty.conffiles ./deb/openresty/debian/openresty-xy.conffiles

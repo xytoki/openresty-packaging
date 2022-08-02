@@ -21,10 +21,14 @@ jobs:
         echo "deb http://openresty.org/package/ubuntu $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/openresty.list
         sudo apt-get update
 
-    - name: install rust
+    - name: Install rust
       uses: ATiltedTree/setup-rust@v1
       with:
         rust-version: stable
+    - run: |
+        ln -s ~/.cargo/bin/cargo /bin/cargo
+        ln -s ~/.cargo/bin/rustc /bin/rustc
+        ln -s ~/.cargo/bin/rustup /bin/rustup
     
     - name: Patch modules
       run: sed -i 's/--with-http_gunzip_module/--with-http_v2_hpack_enc --with-http_v3_module --with-http_gunzip_module --with-quiche=$(CURDIR)\/..\/..\/quiche --with-openssl=$(CURDIR)\/..\/..\/quiche\/quiche\/deps\/boringssl --add-module=$(CURDIR)\/..\/..\/ngx-fancyindex --add-module=$(CURDIR)\/..\/..\/nginx-dav-ext-module --add-module=$(CURDIR)\/..\/..\/ngx_brotli/g' ./deb/openresty/debian/rules

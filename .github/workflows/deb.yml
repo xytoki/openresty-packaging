@@ -62,6 +62,9 @@ jobs:
         git clone --recursive https://github.com/cloudflare/quiche
         wget https://raw.githubusercontent.com/kn007/patch/master/nginx_with_quic.patch
         sed -i 's/.\/configure/patch -d .\/bundle\/nginx\-1\* -p01 < $(CURDIR)\/..\/..\/nginx_with_quic.patch \&\& .\/configure/g' ./deb/openresty/debian/rules
+        sed -i 's/\:\/usr\/local\/openresty\/openssl111\/lib//g' ./deb/openresty/debian/rules
+        sed -i 's/\-L\/usr\/local\/openresty\/openssl111\/lib//g' ./deb/openresty/debian/rules
+        sed -i 's/\-I\/usr\/local\/openresty\/openssl111\/include//g' ./deb/openresty/debian/rules
     
     - name: Get ngx-brotli
       run: |

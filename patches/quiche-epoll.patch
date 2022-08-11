@@ -1,0 +1,17 @@
+Try fix quiche epoll_ctl:17:File exists error on request with body
+
+diff -uNr a/src/http/ngx_http_upstream.c b/src/http/ngx_http_upstream.c
+--- a/src/http/ngx_http_upstream.c 2022-08-11 12:04:28.183925003 +0000
++++ b/src/http/ngx_http_upstream.c 2022-05-16 06:44:46.000000000 +0000
+@@ -624,7 +624,11 @@
+ 
+     if (!u->store && !r->post_action && !u->conf->ignore_client_abort) {
+ 
++        #if (NGX_HTTP_V3)
++        if (r->connection->read->ready || r->qstream) {
++        #else
+         if (r->connection->read->ready) {
++        #endif
+             ngx_post_event(r->connection->read, &ngx_posted_events);
+ 
+         } else {

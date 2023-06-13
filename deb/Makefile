@@ -8,16 +8,17 @@
 # you need to install the libtemplate-perl package first to get the tpage utility.
 # we use Perl TT2 templates to generate */debian/changelog files.
 
-JOBS=8
-ZLIB_VER=1.2.12
+JOBS=$(shell nproc)
+ZLIB_VER=1.2.13
 PCRE_VER=8.45
 SSL_VER=1.1.0l
-SSL111_VER=1.1.1n
+SSL111_VER=1.1.1s
 OR_VER=1.21.4.1
 LEMPLATE_VER=0.15
 TEST_NGINX_VER=0.29
 OPTS=
 DISTRO:=$(shell lsb_release -c|awk '{print $$2}')
+deb_toolchain_pkgs = debhelper devscripts
 
 .PHONY: build
 build: zlib-build pcre-build openssl-build \
@@ -39,6 +40,9 @@ zlib-download:
 	rm -f *.orig.tar.*
 	wget -nH --cut-dirs=100 --mirror 'https://www.zlib.net/fossils/zlib-$(ZLIB_VER).tar.gz'
 	cp zlib-$(ZLIB_VER).tar.gz openresty-zlib_$(ZLIB_VER).orig.tar.gz
+
+.PHONY: openresty-zlib-build
+openresty-zlib-build: zlib-build
 
 .PHONY: zlib-build
 zlib-build: | zlib-clean zlib-download
@@ -137,6 +141,9 @@ openssl111-download:
 	wget -nH --cut-dirs=100 --mirror 'https://www.openssl.org/source/openssl-$(SSL111_VER).tar.gz'
 	cp openssl-$(SSL111_VER).tar.gz openresty-openssl111_$(SSL111_VER).orig.tar.gz
 
+.PHONY: openresty-openssl111-build
+openresty-openssl111-build: openssl111-build
+
 .PHONY: openssl111-build
 openssl111-build: | openssl111-clean openssl111-download
 	sudo apt-get -y -qq install openresty-zlib-dev
@@ -154,6 +161,9 @@ openssl111-debug-download:
 	rm -f *.orig.tar.*
 	wget -nH --cut-dirs=100 --mirror 'https://www.openssl.org/source/openssl-$(SSL111_VER).tar.gz'
 	cp openssl-$(SSL111_VER).tar.gz openresty-openssl111-debug_$(SSL111_VER).orig.tar.gz
+
+.PHONY: openresty-openssl111-debug-build
+openresty-openssl111-debug-build: openssl111-debug-build
 
 .PHONY: openssl111-debug-build
 openssl111-debug-build: | openssl111-debug-clean openssl111-debug-download
@@ -191,8 +201,8 @@ openresty-download:
 
 .PHONY: openresty-build
 openresty-build: | openresty-clean openresty-download
-	sudo apt-get -y -qq install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-dev systemtap-sdt-dev
-	sudo apt-get -y -qq --only-upgrade install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-dev systemtap-sdt-dev
+	sudo apt-get -y -qq install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-dev systemtap-sdt-dev $(deb_toolchain_pkgs)
+	sudo apt-get -y -qq --only-upgrade install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-dev systemtap-sdt-dev $(deb_toolchain_pkgs)
 	rm -f *.deb *.debian.tar.xz *.dsc *.changes
 	tar xf openresty_$(OR_VER).orig.tar.gz --strip-components=1 -C openresty
 	cd openresty \
@@ -203,8 +213,6 @@ openresty-build: | openresty-clean openresty-download
 
 .PHONY: openresty-clean
 openresty-clean:
-	sudo apt-get -y -qq install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-dev
-	sudo apt-get -y -qq --only-upgrade install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-dev
 	cd openresty && debclean
 	find openresty -maxdepth 1 ! -name 'debian' ! -name 'openresty' -print | xargs rm -rf
 	rm -f openresty*.deb
@@ -230,8 +238,6 @@ openresty-debug-build: | openresty-debug-clean openresty-debug-download
 
 .PHONY: openresty-debug-clean
 openresty-debug-clean:
-	sudo apt-get -y -qq install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-debug-dev
-	sudo apt-get -y -qq --only-upgrade install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-debug-dev
 	-cd openresty-debug && debclean
 	find openresty-debug -maxdepth 1 ! -name 'debian' ! -name 'openresty-debug' -print | xargs rm -rf
 	rm -f openresty-debug*.deb
@@ -257,8 +263,6 @@ openresty-valgrind-build: | openresty-valgrind-clean openresty-valgrind-download
 
 .PHONY: openresty-valgrind-clean
 openresty-valgrind-clean:
-	sudo apt-get -y -qq install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-debug-dev valgrind
-	sudo apt-get -y -qq --only-upgrade install openresty-zlib-dev openresty-pcre-dev openresty-openssl111-debug-dev valgrind
 	-cd openresty-valgrind && debclean
 	find openresty-valgrind -maxdepth 1 ! -name 'debian' ! -name 'openresty-valgrind' -print | xargs rm -rf
 	rm -f openresty-valgrind*.deb

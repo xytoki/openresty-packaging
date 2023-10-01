@@ -54,7 +54,7 @@ jobs:
         mkdir -p ngx_brotli/deps
         git clone https://github.com/google/brotli.git ngx_brotli/deps/brotli --depth=1
         cd ngx_brotli
-        git reset --hard 63ca02abdcf79c9e788d2eedcc388d2335902e52
+        git reset --hard 6e975bcb015f62e1f303054897783355e2a877dc
         
     - name: Get ngx-dav-ext
       run: |

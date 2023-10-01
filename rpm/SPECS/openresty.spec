@@ -1,5 +1,5 @@
 Name:           openresty
-Version:        1.21.4.1
+Version:        1.21.4.2
 Release:        1%{?dist}
 Summary:        OpenResty, scalable web platform by extending NGINX with Lua
 
@@ -12,7 +12,7 @@ URL:            https://openresty.org/
 
 Source0:        https://openresty.org/download/openresty-%{version}.tar.gz
 
-%if 0%{?amzn} >= 2 || 0%{?suse_version} || 0%{?fedora} || 0%{?rhel} >= 7
+%if 0%{?amzn} >= 2 || 0%{?suse_version} || 0%{?fedora} || 0%{?rhel} >= 7 || "%{?_vendor}" == "mariner"
 %define         use_systemd   1
 %endif
 
@@ -352,6 +352,8 @@ fi
 
 
 %changelog
+* Mon Jul 17 2023 Yichun Zhang (agentzh) 1.21.4.2-1
+- upgraded openresty to 1.21.4.2.
 * Tue May 17 2022 Yichun Zhang (agentzh) 1.21.4.1-1
 - upgraded openresty to 1.21.4.1.
 * Fri Aug 6 2021 Yichun Zhang (agentzh) 1.19.9.1-1

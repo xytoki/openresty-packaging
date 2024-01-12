@@ -23,7 +23,7 @@ jobs:
         sudo apt-get update
     
     - name: Patch modules
-      run: sed -i 's/--with-http_gunzip_module/--with-stream_realip_module --with-http_xslt_module --with-http_gunzip_module --add-module=$(CURDIR)\/..\/..\/ngx-fancyindex --add-module=$(CURDIR)\/..\/..\/ngx_http_proxy_connect_module --add-module=$(CURDIR)\/..\/..\/nginx-dav-ext-module --add-module=$(CURDIR)\/..\/..\/ngx_brotli/g' ./deb/openresty/debian/rules
+      run: sed -i 's/--with-http_gunzip_module/--with-http_v3_module --with-stream_realip_module --with-http_xslt_module --with-http_gunzip_module --add-module=$(CURDIR)\/..\/..\/ngx-fancyindex --add-module=$(CURDIR)\/..\/..\/ngx_http_proxy_connect_module --add-module=$(CURDIR)\/..\/..\/nginx-dav-ext-module --add-module=$(CURDIR)\/..\/..\/ngx_brotli/g' ./deb/openresty/debian/rules
     
     - name: Patch debuild
       run: |

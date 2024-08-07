@@ -1,5 +1,5 @@
 Name:           openresty-asan
-Version:        1.25.3.1
+Version:        1.25.3.2
 Release:        1%{?dist}
 Summary:        The AddressSanitizer (ASAN) version of OpenResty
 
@@ -109,6 +109,7 @@ export ASAN_OPTIONS=detect_leaks=0
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
     --with-http_v2_module \
+    --with-http_v3_module \
     --without-mail_pop3_module \
     --without-mail_imap_module \
     --without-mail_smtp_module \
@@ -125,6 +126,7 @@ export ASAN_OPTIONS=detect_leaks=0
     --with-http_mp4_module \
     --with-http_gunzip_module \
     --with-threads \
+    --with-http_slice_module \
     --with-poll_module \
     --with-compat \
     --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT -DLUAJIT_USE_VALGRIND -O1 -fno-omit-frame-pointer' \
@@ -184,6 +186,8 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jul 9 2024 Yichun Zhang (agentzh) 1.25.3.2-1
+- upgraded openresty to 1.25.3.2.
 * Thu Jan 4 2024 Yichun Zhang (agentzh) 1.25.3.1-1
 - upgraded openresty to 1.25.3.1.
 * Thu Oct 26 2023 Yichun Zhang (agentzh) 1.21.4.3-1

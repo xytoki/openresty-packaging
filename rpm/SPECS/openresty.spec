@@ -1,5 +1,5 @@
 Name:           openresty
-Version:        1.25.3.1
+Version:        1.25.3.2
 Release:        1%{?dist}
 Summary:        OpenResty, scalable web platform by extending NGINX with Lua
 
@@ -204,6 +204,7 @@ This package provides the client side tool, opm, for OpenResty Pakcage Manager (
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
     --with-http_v2_module \
+    --with-http_v3_module \
     --without-mail_pop3_module \
     --without-mail_imap_module \
     --without-mail_smtp_module \
@@ -219,6 +220,7 @@ This package provides the client side tool, opm, for OpenResty Pakcage Manager (
     --with-http_flv_module \
     --with-http_mp4_module \
     --with-http_gunzip_module \
+    --with-http_slice_module \
     --with-threads \
     --with-compat \
     --with-luajit-xcflags='-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT' \
@@ -352,6 +354,8 @@ fi
 
 
 %changelog
+* Tue Jul 9 2024 Yichun Zhang (agentzh) 1.25.3.2-1
+- upgraded openresty to 1.25.3.2.
 * Thu Jan 4 2024 Yichun Zhang (agentzh) 1.25.3.1-1
 - upgraded openresty to 1.25.3.1.
 * Thu Oct 26 2023 Yichun Zhang (agentzh) 1.21.4.3-1

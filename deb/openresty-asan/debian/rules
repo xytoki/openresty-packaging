@@ -18,8 +18,8 @@ override_dh_usrlocal:
 override_dh_auto_configure:
 
 override_dh_auto_build:
-	export ASAN_OPTIONS=detect_leaks=0 \
-		&& ./configure \
+	export ASAN_OPTIONS=detect_leaks=0; unset LD_PRELOAD; \
+		./configure \
     --prefix="/usr/local/openresty-asan" \
     --with-debug \
     --with-cc="ccache gcc -fsanitize=address" \
@@ -33,6 +33,7 @@ override_dh_auto_build:
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
     --with-http_v2_module \
+    --with-http_v3_module \
     --without-mail_pop3_module \
     --without-mail_imap_module \
     --without-mail_smtp_module \
@@ -48,6 +49,7 @@ override_dh_auto_build:
     --with-http_flv_module \
     --with-http_mp4_module \
     --with-http_gunzip_module \
+    --with-http_slice_module \
     --with-threads \
     --with-poll_module \
     --with-compat \
